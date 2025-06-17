@@ -64,3 +64,24 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=123456
       - POSTGRES_DB=ordersdbc
+  
+  # ======================
+  # Payments Microservice
+  # ======================
+
+  payments-ms:
+    build: ./payments-ms
+    ports:
+      - "${PAYMENTS_MS_PORT}:3003"
+    develop:
+      watch:
+        - action: sync
+          path: ./payments-ms/src
+          target: /usr/src/app/src
+    command: yarn start:dev
+    environment:
+      - PORT=${PAYMENTS_MS_PORT}
+      - NATS_SERVERS=nats://nats-server:4222
+      - BASE_URL=${PAYMENTS_MS_BASE_URL}
+      - STRIPE_SECRET_KEY=${PAYMENTS_MS_STRIPE_SECRET_KEY}
+      - STRIPE_ENDPOINTSECRET=${PAYMENTS_MS_STRIPE_ENDPOINTSECRET}
